@@ -1,0 +1,60 @@
+-- bolsa.acoes definição
+
+-- Drop table
+
+-- DROP TABLE bolsa.acoes;
+
+CREATE TABLE bolsa.acoes (
+	id_acao serial4 NOT NULL,
+	nome varchar(100) NOT NULL,
+	nomenclatura varchar(10) NOT NULL,
+	CONSTRAINT acoes_pkey PRIMARY KEY (id_acao),
+	CONSTRAINT unicidade_nemenclatura UNIQUE (nomenclatura)
+);
+CREATE INDEX idx_acao_nomenclatura ON bolsa.acoes USING btree (nomenclatura);
+
+
+-- bolsa.nivel_de_oportunidade definição
+
+-- Drop table
+
+-- DROP TABLE bolsa.nivel_de_oportunidade;
+
+CREATE TABLE bolsa.nivel_de_oportunidade (
+	id_nivel_de_oportunidade serial4 NOT NULL,
+	nome varchar(20) NOT NULL,
+	CONSTRAINT nivel_de_oportunidade_pkey PRIMARY KEY (id_nivel_de_oportunidade)
+);
+
+
+-- bolsa.preco definição
+
+-- Drop table
+
+-- DROP TABLE bolsa.preco;
+
+CREATE TABLE bolsa.preco (
+	id_preco serial4 NOT NULL,
+	preco numeric(10, 2) NOT NULL,
+	"data" date DEFAULT now() NULL,
+	id_acao int4 NOT NULL,
+	CONSTRAINT preco_pkey PRIMARY KEY (id_preco),
+	CONSTRAINT fk_id_acao FOREIGN KEY (id_acao) REFERENCES bolsa.acoes(id_acao) ON DELETE CASCADE
+);
+CREATE INDEX idx_preco_data ON bolsa.preco USING btree (data);
+
+
+-- bolsa.recomendados definição
+
+-- Drop table
+
+-- DROP TABLE bolsa.recomendados;
+
+CREATE TABLE bolsa.recomendados (
+	id_recomendados serial4 NOT NULL,
+	id_preco int4 NOT NULL,
+	id_nivel int4 NULL,
+	CONSTRAINT recomendados_pkey PRIMARY KEY (id_recomendados),
+	CONSTRAINT fk_id_preco FOREIGN KEY (id_preco) REFERENCES bolsa.preco(id_preco) ON DELETE CASCADE,
+	CONSTRAINT fk_nivel_de_oportunidade FOREIGN KEY (id_nivel) REFERENCES bolsa.nivel_de_oportunidade(id_nivel_de_oportunidade)
+);
